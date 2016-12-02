@@ -55,9 +55,9 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
     if x_right != [] and y_right != []:
         
         z_right = np.polyfit(np.array(x_right),np.array(y_right),1)
-        av_x_right = np.mean(x_right)
-        #cv2.line(img, (int((y_min - z_right[1]) / z_right[0]), y_min), (int((y_max - z_right[1]) / z_right[0]), y_max), color, thickness)
-        cv2.line(img, (int(av_x_right), int((av_x_right * z_right[0]) - z_right[1])), (int((y_max - z_right[1]) / z_right[0]), y_max), color, thickness)
+        #av_x_right = np.mean(x_right)
+        cv2.line(img, (int((y_min - z_right[1]) / z_right[0]), y_min), (int((y_max - z_right[1]) / z_right[0]), y_max), color, thickness)
+        #cv2.line(img, (int(av_x_right), int((av_x_right * z_right[0]) - z_right[1])), (int((y_max - z_right[1]) / z_right[0]), y_max), color, thickness)
 
     #f_left = np.poly1d(z_right)
 
