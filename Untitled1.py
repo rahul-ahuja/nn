@@ -28,44 +28,38 @@ def draw_lines(img, lines, color=[255, 0, 0], thickness=2):
     slope_right = []
     y_max = img.shape[1]
     y_min = min(np.amin(lines,axis=0)[0][1],np.amin(lines,axis=0)[0][3])
+    #print ("y_min:", y_min)
     
     
     for line in lines:
         for x1,y1,x2,y2 in line:
             m = ((y2-y1)/(x2-x1))
-            if m < -0.2:  #left line, negative slope
+            if m < -0.5:  #left line, negative slope
                 x_left.append(x1)
                 x_left.append(x2)
                 y_left.append(y1)
                 y_left.append(y2)
-                slope_left.append(m)
-            else:
+                #slope_left.append(m)
+            elif m > 0.5:
+                
                 x_right.append(x1)
                 x_right.append(x2)
                 y_right.append(y1)
                 y_right.append(y2)
-                slope_right.append(m)
+                #slope_right.append(m)
                 
-            #f_left = np.polyfit(np.array(x_left),np.array(y_left),1)
-            #f_right = np.polyfit(np.array(x_right),np.array(y_right),1)
+                
+    z_left = np.polyfit(np.array(x_left),np.array(y_left),1)
+    #f_left = np.poly1d(z_left)
+    #print(np.array(x_right),np.array(y_right))
+    if x_right != [] and y_right != []:
+        
+        z_right = np.polyfit(np.array(x_right),np.array(y_right),1)
+        av_x_right = np.mean(x_right)
+        #cv2.line(img, (int((y_min - z_right[1]) / z_right[0]), y_min), (int((y_max - z_right[1]) / z_right[0]), y_max), color, thickness)
+        cv2.line(img, (int(av_x_right), int((av_x_right * z_right[0]) - z_right[1])), (int((y_max - z_right[1]) / z_right[0]), y_max), color, thickness)
+
+    #f_left = np.poly1d(z_right)
+
             #cv2.line(img, (x1, y1), (x2, y2), color, thickness)
-            #cv2.line(img, (x1, int(f_left(x1))), (x2, int(f_left(x2))), color, thickness)
-            #cv2.line(img, (x1, int(f_right(x1))), (x2, int(f_right(x2))), color, thickness)
-    av_slope_left = np.mean(slope_left)
-    av_slope_right = np.mean(slope_right)
-    av_x_left = np.mean(x_left)
-    av_x_right = np.mean(x_right)
-    av_y_left = np.mean(y_left)
-    av_y_right = np.mean(y_right)
-    y_left_intercept = av_y_left - av_x_left * av_slope_left
-    y_right_intercept = av_y_right - av_x_right * av_slope_right
-    
-    x1_left = (y_min - y_left_intercept) / av_slope_left 
-    x1_right = (y_min - y_right_intercept) / av_slope_right
-    x2_left = (y_max - y_left_intercept) / av_slope_left 
-    x2_right = (y_max - y_right_intercept) / av_slope_right
-    
-    cv2.line(img, (int(x1_left), y_min), (int(x2_left), y_max), color, thickness)
-    cv2.line(img, (int(x1_right), y_min), (int(x2_right), y_max), color, thickness)
-
-
+    cv2.line(img, (int((y_min - z_left[1]) / z_left[0]), y_min), (int((y_max - z_left[1]) / z_left[0]), y_max), color, thickness)
